@@ -29,7 +29,7 @@ Token counts are estimates (about 4 characters a token). We haven't yet measured
 ## Quick start
 
 ```bash
-npm install --save-dev github:Cyborgs-Inc/cavespec#v0.1.0   # npm release coming
+npm install --save-dev cavespec
 npx cavespec measure     # what a plain cut keeps vs the handoff, section by section
 npx cavespec handoff     # the text an agent reads each turn
 npx cavespec check       # check the product spec and its mission specs
