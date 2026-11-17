@@ -1,0 +1,47 @@
+name: Release
+
+# Publishing a GitHub release (tag vX.Y.Z on a commit that has dist/) publishes it to npm and moves the major tag
+# (v0) to it, so `uses: Cyborgs-Inc/cavespec@v0` follows the latest release. Needs the NPM_TOKEN secret: an npm
+# granular access token with read and write on packages. Run it by hand to retry a release.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish (vX.Y.Z)
+        required: true
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Check the tag matches package.json
+        run: test "v$(node -p 'require("./package.json").version')" = "$TAG"
+      - name: Publish to npm
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Move the major tag
+        run: |
+          major="${TAG%%.*}"
+          git tag -f "$major" "$TAG^{commit}"
+          git push -f origin "refs/tags/$major"
