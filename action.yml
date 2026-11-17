@@ -1,0 +1,27 @@
+name: cavespec
+description: Check a product spec and its mission specs, and that each mission's handoff fits its token budget.
+branding:
+  icon: check-square
+  color: gray-dark
+inputs:
+  config:
+    description: Path to cavespec.json, from the repository root.
+    default: cavespec.json
+  budget:
+    description: Token budget for each handoff (estimated). Defaults to the config's, or 6000.
+    default: ""
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - name: cavespec check
+      shell: bash
+      env:
+        CAVESPEC_CONFIG: ${{ inputs.config }}
+        CAVESPEC_BUDGET: ${{ inputs.budget }}
+      run: |
+        args=(check --config "$CAVESPEC_CONFIG")
+        if [ -n "$CAVESPEC_BUDGET" ]; then args+=(--budget "$CAVESPEC_BUDGET"); fi
+        node "$GITHUB_ACTION_PATH/dist/bin.js" "${args[@]}"

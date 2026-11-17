@@ -1,0 +1,44 @@
+{
+  "name": "cavespec",
+  "version": "0.1.0",
+  "description": "Keep coding agents on two levels of intent, product and mission, in few tokens: a compact ProductSpec handoff, caveman-style.",
+  "license": "MIT",
+  "author": "Cyborgs Inc",
+  "repository": "github:Cyborgs-Inc/cavespec",
+  "keywords": ["productspec", "caveman", "claude-code", "codex", "gemini", "agents", "spec", "tokens"],
+  "type": "module",
+  "bin": {
+    "cavespec": "dist/bin.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "skill", "action.yml", "README.md", "LICENSE"],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts src/bin.ts --bundle --platform=node --target=node20 --format=esm --outdir=dist --external:@productspec/parser && tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@productspec/parser": ">=0.27.0"
+  },
+  "peerDependenciesMeta": {
+    "@productspec/parser": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@productspec/parser": "^0.27.0",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.0"
+  }
+}

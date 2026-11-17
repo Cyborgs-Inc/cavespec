@@ -1,0 +1,5 @@
+{
+  "product": "docs/lists.product-spec.md",
+  "missions": ["docs/missions/*.product-spec.md"],
+  "budget": 1500
+}
